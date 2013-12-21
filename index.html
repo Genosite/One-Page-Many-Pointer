@@ -123,8 +123,8 @@
 	}, false)
 
 	$("#f_connect").submit(function(e) {
-		session.name = $(this.ptname).val()
-		$("#f_connect").hide()
+		session.name = $(this.ptname).val() + Math.round(Math.random()*100)
+		$("#f_connect").hide('slow')
 		fbme = new Firebase('https://onepagemanypointer.firebaseio.com/'+session.name)
 		fbme.set(session)
 		e.preventDefault()
