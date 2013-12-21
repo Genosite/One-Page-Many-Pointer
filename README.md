@@ -1,4 +1,4 @@
-One-Page-Many-Pointer
+One-Page-Many-Pointers
 =====================
 
-One Page Many Pointer is an experiment about co browsing
+One Page Many Pointers is an experiment about co browsing
