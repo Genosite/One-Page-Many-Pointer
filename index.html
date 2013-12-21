@@ -1,0 +1,169 @@
+<html>
+<head>
+	<title>One Page Many Pointer</title>
+	<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+	<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	<style type="text/css">
+	.ptpl {
+		position: absolute;
+		-webkit-transition: all 0.5s ease-in-out;
+		-moz-transition: all 0.5s ease-in-out;
+		-o-transition: all 0.5s ease-in-out;
+		transition: all 0.5s ease-in-out;
+	}
+  </style>
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+			<h3 class="text-muted">One Page Many Pointer</h3>
+		</div>
+
+		<div class="jumbotron">
+			<h1>One Page Many Pointer</h1>
+			<p class="lead">
+				One Page Many Pointer is a expriment about co browsing.
+				In first time open a second browser or tell a friend.
+				And choose a name and click on Connect button.
+				Enjoy !
+			</p>
+			<p>
+				<form class="form-inline" role="form" id="f_connect">
+					<div class="form-group">
+						<label class="sr-only" for="ptname">Choose a name for your pointer</label>
+						<input type="text" class="form-control" id="ptname" placeholder="Enter a name for your pointer">
+					</div>
+					<button type="submit" class="btn btn-default">Connect</button>
+				</form>
+			</p>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-6 col-md-3" >
+				<a href="http://www.flickr.com/photos/35209448@N06/11447867136/" class="thumbnail" title="TM_14553a de 6914tm, sur Flickr"><img  id="img1" src="http://farm4.staticflickr.com/3808/11447867136_c4221f1d4e.jpg" width="500" height="333" alt="TM_14553a"></a>
+			</div>
+			<div class="col-xs-6 col-md-3" >
+				<a href="#" class="thumbnail"><img  id="img2" src="http://25.media.tumblr.com/a8c4d483ee571628a3836773b659230a/tumblr_mg7fhuDtIj1qfiuz5o1_500.gif" width="500" height="333"></a>
+			</div>
+			<div class="col-xs-6 col-md-3" >
+				<a href="#" class="thumbnail"><img  id="img3" src="http://lorempixel.com/640/480/animals" width="500" height="333"></a>
+			</div>
+			<div class="col-xs-6 col-md-3"  >
+				<a href="#" class="thumbnail"><img id="img4" src="http://lorempixel.com/500/333/food" width="500" height="333"></a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6 col-md-3"  >
+				<a href="#" class="thumbnail"><img id="img5" src="http://gifs.gifbin.com/353949687.gif" width="500" height="333"></a>
+			</div>
+			<div class="col-xs-6 col-md-3"  >
+				<a href="#" class="thumbnail"><img id="img6" src="http://lorempixel.com/500/334/animals" width="500" height="333"></a>
+			</div>
+			<div class="col-xs-6 col-md-3"  >
+				<a href="#" class="thumbnail"><img id="img7" src="http://lorempixel.com/500/334/nature" width="500" height="333"></a>
+			</div>
+			<div class="col-xs-6 col-md-3" >
+				<a href="#" class="thumbnail"><img id="img8" src="http://lorempixel.com/500/335/sports" width="500" height="333"></a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6 col-md-3"  >
+				<a href="#" class="thumbnail"><img id="img9" src="http://gifs.gifbin.com/062010/1276705637_dog-slides-on-snow.gif" width="500" height="333"></a>
+			</div>
+			<div class="col-xs-6 col-md-3"  >
+				<a href="#" class="thumbnail"><img id="img10" src="http://lorempixel.com/500/330/cats" width="500" height="333"></a>
+			</div>
+			<div class="col-xs-6 col-md-3" >
+				<a href="#" class="thumbnail"><img id="img11" src="http://gifs.gifbin.com/384yusw280sw.gif" width="500" height="333"></a>
+			</div>
+			<div class="col-xs-6 col-md-3" >
+				<a href="#" class="thumbnail"><img id="img12" src="http://lorempixel.com/500/330/city" width="500" height="333"></a>
+			</div>
+		</div>
+
+		<div class="footer">
+			<p>&copy; Made by Phedrik Benjabria @genosite</p>
+		</div>
+	<script>
+	var fball = new Firebase('https://onepagemanypointer.firebaseio.com/')
+	var fbme = null
+	var session  = {
+		x : 0,
+		y : 0,
+		xMax : 0,
+		yMax : 0,
+		idElem : null,
+		name : null,
+	}
+
+	document.addEventListener('mousemove', function(e) {
+		var up = false
+
+		if ( Math.round(e.x / 100) != session.x)
+		{
+			session.x = Math.round(e.x / 100)
+			up = true
+		}
+		if ( Math.round(e.y / 100) != session.y)
+		{
+			session.y = Math.round(e.y / 100)
+			up = true
+		}
+		if (session.idElem != e.toElement.id)
+		{
+			session.idElem = e.toElement.id
+			up = true
+		}
+		if (up && fbme)
+			fbme.update(session)
+	}, false)
+
+	$("#f_connect").submit(function(e) {
+		session.name = $(this.ptname).val()
+		$("#f_connect").hide()
+		fbme = new Firebase('https://onepagemanypointer.firebaseio.com/'+session.name)
+		fbme.set(session)
+		e.preventDefault()
+	});
+
+	fball.on('child_added', function (snapshot) {
+		var Pointer = snapshot.val()
+		var img = $('<img class="ptpl" src="images/pointer.png"/>')
+
+		if (Pointer.name != session.name)
+		{
+			img.attr('id', Pointer.name+'pt')
+			img.css('left', Pointer.x * 100)
+			img.css('top', Pointer.y * 100)
+			img.css('opacity', 0.5)
+			$(document.body).append(img)
+		}
+	})
+
+	fball.on('child_changed', function(snapshot) {
+		var Pointer = snapshot.val()
+
+		if (Pointer.name != session.name)
+		{
+			if($('#'+Pointer.idElem).offset())
+			{
+				$('#'+Pointer.name+'pt').css('left', $('#'+Pointer.idElem).offset().left + Math.random() * 100)
+				$('#'+Pointer.name+'pt').css('top', $('#'+Pointer.idElem).offset().top + Math.random() * 100)
+			}
+			else
+			{
+				$('#'+Pointer.name+'pt').css('left', Pointer.x * 100)
+				$('#'+Pointer.name+'pt').css('top',  Pointer.y * 100)
+			}
+			
+		}
+	})
+
+	fball.on("child_removed", function(snapshot) {
+    	var Pointer = snapshot.val()
+    	$(Pointer.name+'pt').remove()
+  	});
+	</script>
+</body>
+</html>
